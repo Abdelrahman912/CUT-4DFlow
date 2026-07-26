@@ -2,12 +2,6 @@
 
 Reference implementation for the paper **"ℂUT-4DFlow for Accelerated 4D-Flow MRI Reconstruction."**
 
-CUT-4DFlow is a complex-valued unrolled transformer for reconstructing highly
-undersampled multi-coil 4D-flow cardiac MRI. Each unrolling stage applies a shared
-complex transformer denoiser, a closed-form data-consistency step, and a learnable
-weighted-average merge; the weighted-average gate is conditioned on the acceleration
-factor through an anchored lookup table.
-
 ## Installation
 
 ```bash
