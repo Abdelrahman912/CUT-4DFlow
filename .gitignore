@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# data and trained weights are downloaded/added separately
+Data/*
+!Data/README.md
+checkpoints/*
+!checkpoints/.gitkeep
+
+# run outputs
+outputs/
+src/runs/
+*.ckpt

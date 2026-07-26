@@ -1,0 +1,20 @@
+name: cut4dflow
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pytorch>=2.1
+  - pytorch-cuda=12.1
+  - numpy
+  - scipy
+  - h5py
+  - pyyaml
+  - tqdm
+  - matplotlib
+  - pandas
+  - pillow
+  - einops
+  - scikit-image
+  - pip
