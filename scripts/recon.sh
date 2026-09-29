@@ -2,11 +2,11 @@
 # Reconstruct a ValidationSet with a trained checkpoint, writing the submission layout
 # (COO .npz) + optional animations.
 #   conda activate cut4dflow
-#   CKPT=checkpoints/full_super_v2/best.ckpt ./scripts/recon.sh
+#   CKPT=checkpoints/full_super_v3_d160_n15/best.ckpt ./scripts/recon.sh
 set -euo pipefail
 REPO="$(cd "$(dirname "$0")/.." && pwd)"; cd "$REPO"
 
-CKPT="${CKPT:-checkpoints/full_super_v2/best.ckpt}"
+CKPT="${CKPT:-checkpoints/full_super_v3_d160_n15/best.ckpt}"
 VAL_ROOT="${VAL_ROOT:-$REPO/Data/TaskR1R2/ValidationSet/Aorta}"
 OUT_DIR="${OUT_DIR:-outputs/recon}"
 SUBPATH="${SUBPATH:-TaskR1R2/ValidationSet/Aorta}"

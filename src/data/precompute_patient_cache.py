@@ -35,7 +35,10 @@ from src.data.dataset import find_valid_patients
 from src.data.h5_reader import load_patient
 
 
-DEFAULT_SRC = 'Data/TaskR1R2/TrainSet/Aorta'
+DEFAULT_SRC = (
+    '/home/afathy/Thesis/code/flowmri_net-main/'
+    'data/CMRx4DFlow/_extracted/TaskR1R2/TrainSet/Aorta'
+)
 DEFAULT_DST = 'outputs/patient_cache'
 
 

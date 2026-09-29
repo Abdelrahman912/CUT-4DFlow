@@ -19,8 +19,8 @@ from __future__ import annotations
 import numpy as np
 import scipy.fft as sfft
 
-SPATIAL_AXES = (-3, -2, -1)
 COIL_AXIS = -4
+SPATIAL_AXES = (-3, -2, -1)
 
 
 def _fftc(x, axes=SPATIAL_AXES):

@@ -1,4 +1,7 @@
-"""Centred 2-D FFT operators (orthonormal) over the last two axes."""
+"""
+MRI utility functions.
+Copied verbatim from flowmri_net-main/utils/misc_utils.py.
+"""
 
 import numpy as np
 import torch
@@ -19,13 +22,17 @@ def ifftc2d(x):
 
 
 def mriAdjointOp(rawdata, sens, mask):
-    """Adjoint: masked k-space -> coil-combined image."""
-    coil_sens = np.fft.fftshift(np.fft.ifft2(np.fft.ifftshift(rawdata * mask), norm="ortho"))
-    return np.sum(coil_sens * np.conj(sens), axis=1)
+    """Adjoint operation: k-space -> coil-combined under-sampled image."""
+    coil_sens = np.fft.fftshift(
+        np.fft.ifft2(np.fft.ifftshift(rawdata * mask), norm="ortho")
+    )
+    img = np.sum(coil_sens * np.conj(sens), axis=1)
+    return img
 
 
 def mri_forward_op(u, coil_sens, sampling_mask):
-    """Forward: image -> sampled k-space."""
+    """Forward pass: image -> sampled k-space."""
     coil_imgs = u.unsqueeze(2) * coil_sens.unsqueeze(1).unsqueeze(3)
     Fu = fftc2d(coil_imgs)
-    return sampling_mask.unsqueeze(2).unsqueeze(4) * Fu
+    kspace = sampling_mask.unsqueeze(2).unsqueeze(4) * Fu
+    return kspace

@@ -1,1 +1,1 @@
-"""Post-processing: submission reconstruction over the ValidationSet."""
+"""Post-processing / inference: submission recon over the official ValidationSet."""

@@ -1,4 +1,5 @@
-# Training configuration for CUT-4DFlow (the full_super_v2 model).
+# CUT-4DFlow — Final model (Table 1, "Final" column).
+# N=15 unrolled units, d=160, 10 heads, per-stage CMLP, EMA weights.
 # Paths can be overridden from the environment: CMRX_TRAIN_ROOT, CMRX_CACHE_DIR, CMRX_SAVE_DIR.
 
 # ── Data root: point at the extracted challenge TrainSet (see Data/README.md) ──
@@ -7,9 +8,9 @@ patient_cache_dir: null            # optional precomputed .pt cache dir (see pre
 require_cache: false
 
 # ── Mask sampling / SSDU ──
-usrate_list: [10, 20, 30, 40, 50]  # undersampling factors R
+usrate_list: [10, 20, 30, 40, 50]  # undersampling factors R, drawn per sample
 lambda_v: 1.0                      # weight of the velocity-difference loss term (0 disables it)
-supervised: true
+supervised: true                   # false = SSDU; true = loss on the un-acquired complement
 val_per_scanner: 1
 split_seed: 1337
 val_r_list: [10, 20, 30, 40, 50]
@@ -20,53 +21,56 @@ ssdu_r2: 9                         # ACS centre radius^2 kept in Theta
 masks_per_sample: 1
 r_per_sample: 1
 fixed_masks: false
-
-# ── Per-scanner oversampling (train only): rebalances under-represented scanners.
-#    First matching rule wins. all_R = one entry per R; random = `reps` random draws.
-oversample_rule:
-  - {max_patients: 5,  reps: 5, mode: all_R}
-  - {max_patients: 10, reps: 2, mode: random}
+oversample_rule: null
 
 # ── Architecture ──
-n_stages: 10                       # unrolled iterations (weight-tied denoiser)
-d_model: 96
-n_heads: 6                         # d_k = 96 / 6 = 16
-n_blocks: 2
+n_stages: 15                       # unrolled units N
+d_model: 160
+n_heads: 10                        # d_k = 160 / 10 = 16
+n_blocks: 2                        # transformer layers per unit
 mlp_ratio: 4
 patch_size: 1
 in_channels: 4                     # velocity encodings
 init_scheme: uniform
 dc_min_v: 0.0
 wa_min_para: 0.0
+embed_kernel: 3                    # overlapping k x k complex conv patch embed
+unshared_mlp: true                 # per-stage CMLP (CLN -> CMLP is the only untied block)
+mlp_neg_bias_init: [-0.3, -0.05]   # modReLU shrinkage init range
+grad_check: true                   # recompute each unit in backward (fits the depth in memory)
 
 # ── Positional encoding (fixed Fourier features) ──
 pe_learnable: false
 K_pe: 4
 K_cardiac: 4
 
-# ── Scanner balancing is handled by oversample_rule above (do not also enable loss weighting) ──
 sampling_alpha: 1.0
 scanner_loss_weighting: false
 
-# ── Optimiser ──
+# ── Optimiser (AdamW, cosine annealing) ──
 lr: 5.0e-4
 weight_decay: 1.0e-3
 warmup_epochs: 5
 eta_min: 1.0e-6
 n_epochs: 100
-batch_size: 5
+batch_size: 5                      # gradient-accumulation steps per optimiser step
 grad_clip: 1.0
 num_workers: 4
 mixed_precision: false             # complex64 is not supported by autocast
 sampler: interleave                # 'block' | 'interleave'
 
+# ── Exponential moving average of the weights (reported results use these) ──
+ema:
+  enabled: true
+  decay: 0.999
+
 # ── Validation / output ──
 val_every: 1
 val_max_samples: -1
-save_dir: checkpoints/full_super_v2
+save_dir: checkpoints/full_super_v3_d160_n15
 seed: 1337
 
-# ── Acceleration-conditioning: anchored lookup table on the weighted-average gate ──
+# ── Acceleration conditioning: anchored lookup table on the weighted-average gate ──
 conditioning:
   enabled: true
   mode: table                      # 'table' | 'mlp'

@@ -3,13 +3,22 @@ __pycache__/
 *.pyo
 .ipynb_checkpoints/
 
-# data and trained weights are downloaded/added separately
+# data is downloaded separately
 Data/*
 !Data/README.md
-checkpoints/*
-!checkpoints/.gitkeep
 
 # run outputs
 outputs/
 src/runs/
+
+# checkpoints: only the three models reported in the paper are tracked
 *.ckpt
+checkpoints/*
+!checkpoints/.gitkeep
+!checkpoints/README.md
+!checkpoints/full_sup_base/
+!checkpoints/full_super_v2/
+!checkpoints/full_super_v3_d160_n15/
+!checkpoints/full_sup_base/best.ckpt
+!checkpoints/full_super_v2/best.ckpt
+!checkpoints/full_super_v3_d160_n15/best.ckpt
